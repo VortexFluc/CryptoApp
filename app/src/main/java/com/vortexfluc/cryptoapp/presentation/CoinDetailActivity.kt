@@ -2,10 +2,11 @@ package com.vortexfluc.cryptoapp.presentation
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.squareup.picasso.Picasso
+import com.vortexfluc.cryptoapp.data.network.ApiFactory.BASE_IMAGE_URL
 import com.vortexfluc.cryptoapp.databinding.ActivityCoinDetailBinding
 import com.vortexfluc.cryptoapp.utils.convertTimestampToTime
 
@@ -23,21 +24,21 @@ class CoinDetailActivity : AppCompatActivity() {
             finish()
             return
         }
-        val fSym = intent.getStringExtra(EXTRA_FSYM)
+        val fSym = intent.getStringExtra(EXTRA_FSYM) ?: EMPTY_STRING
 
         viewModel = ViewModelProvider(this)[CoinViewModel::class.java]
 
-        fSym?.let {
+        fSym.let {
             viewModel.getDetailInfo(fSym).observe(this) {
                 with(binding) {
-                    Picasso.get().load(it.getFullImageUrl()).into(ivCurrency)
-                    tvCurrencyName.text = it.fromsymbol
-                    tvConvertedCurrencyName.text = it.tosymbol
+                    Picasso.get().load(BASE_IMAGE_URL + it.imageUrl).into(ivCurrency)
+                    tvCurrencyName.text = it.fromSymbol
+                    tvConvertedCurrencyName.text = it.toSymbol
                     tvPrice.text = it.price?.toString() ?: "Error!"
-                    tvHighDay.text = it.highday?.toString()
-                    tvLowDay.text = it.lowday?.toString()
-                    tvLastMarket.text = it.lastmarket
-                    tvLastUpdate.text = convertTimestampToTime(it.lastupdate)
+                    tvHighDay.text = it.highDay?.toString()
+                    tvLowDay.text = it.lowDay?.toString()
+                    tvLastMarket.text = it.lastMarket
+                    tvLastUpdate.text = convertTimestampToTime(it.lastUpdate)
                 }
 
             }
@@ -48,6 +49,7 @@ class CoinDetailActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "CoinDetailActivity"
         private const val EXTRA_FSYM = "fSym"
+        private const val EMPTY_STRING = ""
 
         fun newIntent(context: Context, fSym: String): Intent {
             val intent = Intent(context, CoinDetailActivity::class.java)

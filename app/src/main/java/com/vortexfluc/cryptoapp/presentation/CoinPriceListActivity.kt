@@ -5,8 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.vortexfluc.cryptoapp.R
+import com.vortexfluc.cryptoapp.domain.CoinInfo
 import com.vortexfluc.cryptoapp.presentation.adapter.CoinInfoAdapter
-import com.vortexfluc.cryptoapp.data.network.model.CoinInfoDto
 
 class CoinPriceListActivity : AppCompatActivity() {
 
@@ -20,16 +20,16 @@ class CoinPriceListActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this)[CoinViewModel::class.java]
         val adapter = CoinInfoAdapter(this)
         adapter.onCoinClickListener = object : CoinInfoAdapter.OnCoinClickListener {
-            override fun onCoinClick(coinPriceInfo: CoinInfoDto) {
+            override fun onCoinClick(coinPriceInfo: CoinInfo) {
                 val intent = CoinDetailActivity.newIntent(
                     this@CoinPriceListActivity,
-                    coinPriceInfo.fromsymbol
+                    coinPriceInfo.fromSymbol
                 )
                 startActivity(intent)
             }
         }
         rvCoinPriceList.adapter = adapter
-        viewModel.priceList.observe(this) {
+        viewModel.coinInfoList.observe(this) {
             adapter.coinInfoList = it
         }
     }
@@ -37,6 +37,7 @@ class CoinPriceListActivity : AppCompatActivity() {
     private fun initViews() {
         rvCoinPriceList = findViewById(R.id.rvCoinPriceList)
     }
+
     companion object {
         private const val TAG = "CoinPriceInfo"
     }

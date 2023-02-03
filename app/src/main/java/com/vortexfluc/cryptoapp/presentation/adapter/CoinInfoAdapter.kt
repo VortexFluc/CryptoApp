@@ -9,11 +9,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import com.vortexfluc.cryptoapp.R
-import com.vortexfluc.cryptoapp.data.network.model.CoinInfoDto
+import com.vortexfluc.cryptoapp.data.network.ApiFactory.BASE_IMAGE_URL
+import com.vortexfluc.cryptoapp.domain.CoinInfo
+import com.vortexfluc.cryptoapp.utils.convertTimestampToTime
 
 class CoinInfoAdapter(private val context: Context): RecyclerView.Adapter<CoinInfoAdapter.CoinInfoViewHolder>() {
 
-    var coinInfoList: List<CoinInfoDto> = listOf<CoinInfoDto>()
+    var coinInfoList: List<CoinInfo> = listOf()
     set(value) {
         field = value
         notifyDataSetChanged()
@@ -32,10 +34,10 @@ class CoinInfoAdapter(private val context: Context): RecyclerView.Adapter<CoinIn
             with(coinInfo) {
                 val symbolsTemplate = context.getString(R.string.symbols_template)
                 val lastUpdateTemplate = context.getString(R.string.last_update_template)
-                tvCurrencyName.text = String.format(symbolsTemplate, fromsymbol, tosymbol)
+                tvCurrencyName.text = String.format(symbolsTemplate, fromSymbol, toSymbol)
                 tvCurrencyData.text = price.toString()
-                tvCurrencyLastDate.text = String.format(lastUpdateTemplate, getFormattedDate())
-                Picasso.get().load(getFullImageUrl()).into(ivCurrency)
+                tvCurrencyLastDate.text = String.format(lastUpdateTemplate, convertTimestampToTime(lastUpdate))
+                Picasso.get().load(BASE_IMAGE_URL + imageUrl).into(ivCurrency)
 
                 itemView.setOnClickListener {
                     onCoinClickListener?.onCoinClick(this)
@@ -47,7 +49,7 @@ class CoinInfoAdapter(private val context: Context): RecyclerView.Adapter<CoinIn
     override fun getItemCount() = coinInfoList.size
 
     interface OnCoinClickListener {
-        fun onCoinClick(coinPriceInfo: CoinInfoDto)
+        fun onCoinClick(coinPriceInfo: CoinInfo)
     }
 
     inner class CoinInfoViewHolder(view: View): RecyclerView.ViewHolder(view) {

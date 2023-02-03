@@ -11,7 +11,7 @@ import com.vortexfluc.cryptoapp.domain.CoinRepository
 import kotlinx.coroutines.delay
 
 class CoinRepositoryImpl(
-    private val application: Application
+    application: Application
 ): CoinRepository {
     private val coinInfoDao = AppDatabase.getInstance(application).coinPriceInfoDao()
     private val mapper = CoinMapper()
@@ -33,14 +33,17 @@ class CoinRepositoryImpl(
 
     override suspend fun loadData() {
         while (true) {
-            val topCoins = apiService.getTopCoinsInfo(limit = 50)
-            val fSyms = mapper.mapNamesListToString(topCoins)
-            val jsonContainer = apiService.getFullPriceList(fSyms = fSyms)
-            val coinInfoListDto = mapper.mapJsonContainerToListCoinInfo(jsonContainer)
-            val dbModelList = coinInfoListDto.map {
-                mapper.mapDtoToDbModel(it)
+            try {
+                val topCoins = apiService.getTopCoinsInfo(limit = 50)
+                val fSyms = mapper.mapNamesListToString(topCoins)
+                val jsonContainer = apiService.getFullPriceList(fSyms = fSyms)
+                val coinInfoListDto = mapper.mapJsonContainerToListCoinInfo(jsonContainer)
+                val dbModelList = coinInfoListDto.map {
+                    mapper.mapDtoToDbModel(it)
+                }
+                coinInfoDao.insertPriceList(dbModelList)
+            } catch (e: Exception) {
             }
-            coinInfoDao.insertPriceList(dbModelList)
             delay(10000)
         }
     }
