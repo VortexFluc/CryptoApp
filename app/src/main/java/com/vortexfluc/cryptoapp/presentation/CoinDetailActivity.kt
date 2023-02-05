@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.squareup.picasso.Picasso
+import com.vortexfluc.cryptoapp.R
 import com.vortexfluc.cryptoapp.databinding.ActivityCoinDetailBinding
 
 class CoinDetailActivity : AppCompatActivity() {
@@ -24,25 +25,11 @@ class CoinDetailActivity : AppCompatActivity() {
             return
         }
         val fSym = intent.getStringExtra(EXTRA_FSYM) ?: EMPTY_STRING
-
-        viewModel = ViewModelProvider(this)[CoinViewModel::class.java]
-
-        fSym.let {
-            viewModel.getDetailInfo(fSym).observe(this) {
-                with(binding) {
-                    Picasso.get().load(it.imageUrl).into(ivCurrency)
-                    tvCurrencyName.text = it.fromSymbol
-                    tvConvertedCurrencyName.text = it.toSymbol
-                    tvPrice.text = it.price?.toString() ?: "Error!"
-                    tvHighDay.text = it.highDay?.toString()
-                    tvLowDay.text = it.lowDay?.toString()
-                    tvLastMarket.text = it.lastMarket
-                    tvLastUpdate.text = it.lastUpdate
-                }
-
-            }
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, CoinDetailFragment.newInstance(fSym))
+                .commit()
         }
-
 
     }
     companion object {
