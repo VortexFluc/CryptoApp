@@ -6,8 +6,14 @@ import com.vortexfluc.cryptoapp.data.network.model.CoinInfoDto
 import com.vortexfluc.cryptoapp.data.network.model.CoinInfoJsonContainerDto
 import com.vortexfluc.cryptoapp.data.network.model.CoinNamesListDto
 import com.vortexfluc.cryptoapp.domain.CoinInfo
+import java.sql.Timestamp
+import java.text.SimpleDateFormat
+import java.util.*
 
 class CoinMapper {
+    companion object {
+        const val BASE_IMAGE_URL = "https://cryptocompare.com/"
+    }
 
     fun mapDtoToDbModel(dto: CoinInfoDto) =
         CoinInfoDbModel(
@@ -18,7 +24,7 @@ class CoinMapper {
             highDay = dto.highday,
             lowDay = dto.lowday,
             lastMarket = dto.lastmarket,
-            imageUrl = dto.imageurl
+            imageUrl = BASE_IMAGE_URL + dto.imageurl
         )
 
     fun mapJsonContainerToListCoinInfo(jsonContainer: CoinInfoJsonContainerDto): List<CoinInfoDto> {
@@ -48,11 +54,23 @@ class CoinMapper {
             fromSymbol = dbModel.fromSymbol,
             toSymbol = dbModel.toSymbol,
             price = dbModel.price,
-            lastUpdate = dbModel.lastUpdate,
+            lastUpdate = convertTimestampToTime(dbModel.lastUpdate),
             highDay = dbModel.highDay,
             lowDay = dbModel.lowDay,
             lastMarket = dbModel.lastMarket,
             imageUrl = dbModel.imageUrl
         )
+    }
+
+    private fun convertTimestampToTime(timestamp: Int?): String {
+        if (timestamp == null) return ""
+        val longNum: Long = timestamp.toLong()
+        val stamp = Timestamp(longNum * 1000)
+        val date = Date(stamp.time)
+        val pattern = "HH:mm:ss"
+
+        val sdf = SimpleDateFormat(pattern, Locale.getDefault())
+        sdf.timeZone = TimeZone.getDefault()
+        return sdf.format(date)
     }
 }

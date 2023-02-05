@@ -3,10 +3,7 @@ package com.vortexfluc.cryptoapp.data.network.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.Expose
-
 import com.google.gson.annotations.SerializedName
-import com.vortexfluc.cryptoapp.utils.convertTimestampToTime
-import com.vortexfluc.cryptoapp.data.network.ApiFactory.BASE_IMAGE_URL
 
 
 @Entity(tableName = "full_price_list")
@@ -199,12 +196,4 @@ data class CoinInfoDto (
     @SerializedName("IMAGEURL")
     @Expose
     val imageurl: String? = null
-) {
-    fun getFormattedDate(): String {
-        return convertTimestampToTime(lastupdate)
-    }
-
-    fun getFullImageUrl(): String {
-        return BASE_IMAGE_URL + imageurl
-    }
-}
+)

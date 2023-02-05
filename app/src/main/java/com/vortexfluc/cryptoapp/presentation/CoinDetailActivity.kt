@@ -6,9 +6,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.squareup.picasso.Picasso
-import com.vortexfluc.cryptoapp.data.network.ApiFactory.BASE_IMAGE_URL
 import com.vortexfluc.cryptoapp.databinding.ActivityCoinDetailBinding
-import com.vortexfluc.cryptoapp.utils.convertTimestampToTime
 
 class CoinDetailActivity : AppCompatActivity() {
 
@@ -31,14 +29,14 @@ class CoinDetailActivity : AppCompatActivity() {
         fSym.let {
             viewModel.getDetailInfo(fSym).observe(this) {
                 with(binding) {
-                    Picasso.get().load(BASE_IMAGE_URL + it.imageUrl).into(ivCurrency)
+                    Picasso.get().load(it.imageUrl).into(ivCurrency)
                     tvCurrencyName.text = it.fromSymbol
                     tvConvertedCurrencyName.text = it.toSymbol
                     tvPrice.text = it.price?.toString() ?: "Error!"
                     tvHighDay.text = it.highDay?.toString()
                     tvLowDay.text = it.lowDay?.toString()
                     tvLastMarket.text = it.lastMarket
-                    tvLastUpdate.text = convertTimestampToTime(it.lastUpdate)
+                    tvLastUpdate.text = it.lastUpdate
                 }
 
             }
