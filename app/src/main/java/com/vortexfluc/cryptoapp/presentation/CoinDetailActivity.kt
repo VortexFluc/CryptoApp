@@ -11,11 +11,12 @@ import com.vortexfluc.cryptoapp.databinding.ActivityCoinDetailBinding
 class CoinDetailActivity : AppCompatActivity() {
 
     private lateinit var viewModel: CoinViewModel
-    private lateinit var binding: ActivityCoinDetailBinding
+    private val binding by lazy {
+        ActivityCoinDetailBinding.inflate(layoutInflater)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityCoinDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         if (!intent.hasExtra(EXTRA_FSYM)) {
