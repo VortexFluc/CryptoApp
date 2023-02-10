@@ -2,14 +2,14 @@ package com.vortexfluc.cryptoapp.presentation
 
 import android.app.Application
 import androidx.work.Configuration
-import com.vortexfluc.cryptoapp.data.workers.RefreshDataWorkerFactory
+import com.vortexfluc.cryptoapp.data.workers.CoinWorkerFactory
 import com.vortexfluc.cryptoapp.di.DaggerApplicationComponent
 import javax.inject.Inject
 
 class CryptoApp : Application(), Configuration.Provider {
 
     @Inject
-    lateinit var workerFactory: RefreshDataWorkerFactory
+    lateinit var workerFactory: CoinWorkerFactory
 
     val component by lazy {
         DaggerApplicationComponent.factory().create(this)
