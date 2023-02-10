@@ -5,18 +5,18 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.work.ExistingWorkPolicy
 import androidx.work.WorkManager
-import com.vortexfluc.cryptoapp.data.database.AppDatabase
+import com.vortexfluc.cryptoapp.data.database.CoinInfoDao
 import com.vortexfluc.cryptoapp.data.mapper.CoinMapper
 import com.vortexfluc.cryptoapp.data.workers.RefreshDataWorker
 import com.vortexfluc.cryptoapp.domain.CoinInfo
 import com.vortexfluc.cryptoapp.domain.CoinRepository
+import javax.inject.Inject
 
-class CoinRepositoryImpl(
-    private val application: Application
+class CoinRepositoryImpl @Inject constructor(
+    private val application: Application,
+    private val coinInfoDao: CoinInfoDao,
+    private val mapper: CoinMapper
 ) : CoinRepository {
-    private val coinInfoDao = AppDatabase.getInstance(application).coinPriceInfoDao()
-    private val mapper = CoinMapper()
-
     override fun getCoinInfoList(): LiveData<List<CoinInfo>> {
         return Transformations.map(coinInfoDao.getPriceList()) {
             it.map {

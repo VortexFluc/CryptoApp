@@ -1,20 +1,16 @@
 package com.vortexfluc.cryptoapp.presentation
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.viewModelScope
-import com.vortexfluc.cryptoapp.data.repository.CoinRepositoryImpl
+import androidx.lifecycle.ViewModel
 import com.vortexfluc.cryptoapp.domain.GetCoinInfoListUseCase
 import com.vortexfluc.cryptoapp.domain.GetCoinInfoUseCase
 import com.vortexfluc.cryptoapp.domain.LoadDataUseCase
-import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class CoinViewModel(application: Application) : AndroidViewModel(application) {
-
-    private val repository = CoinRepositoryImpl(application)
-    private val getCoinInfoUseCase = GetCoinInfoUseCase(repository)
-    private val getCoinInfoListUseCase = GetCoinInfoListUseCase(repository)
-    private val loadDataUseCase = LoadDataUseCase(repository)
+class CoinViewModel @Inject constructor(
+    private val getCoinInfoUseCase: GetCoinInfoUseCase,
+    private val getCoinInfoListUseCase: GetCoinInfoListUseCase,
+    private val loadDataUseCase: LoadDataUseCase
+    ) : ViewModel() {
 
     val coinInfoList = getCoinInfoListUseCase()
 

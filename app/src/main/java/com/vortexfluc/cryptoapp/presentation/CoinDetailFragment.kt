@@ -1,5 +1,6 @@
 package com.vortexfluc.cryptoapp.presentation
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,13 +9,25 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.squareup.picasso.Picasso
 import com.vortexfluc.cryptoapp.databinding.FragmentCoinDetailBinding
+import javax.inject.Inject
 
 class CoinDetailFragment : Fragment() {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
 
     private lateinit var viewModel: CoinViewModel
     private var _binding: FragmentCoinDetailBinding? = null
     val binding: FragmentCoinDetailBinding
     get() = _binding ?: throw RuntimeException("FragmentCoinDetailBinding == null")
+
+    private val component by lazy {
+        (requireActivity().application as CryptoApp).component
+    }
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        component.inject(this)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,7 +42,7 @@ class CoinDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val fSym = getSymbol()
 
-        viewModel = ViewModelProvider(this)[CoinViewModel::class.java]
+        viewModel = ViewModelProvider(this, viewModelFactory)[CoinViewModel::class.java]
 
         fSym.let {
             viewModel.getDetailInfo(fSym).observe(viewLifecycleOwner) {
