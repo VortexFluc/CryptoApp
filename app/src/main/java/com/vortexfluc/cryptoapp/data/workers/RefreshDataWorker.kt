@@ -1,15 +1,21 @@
 package com.vortexfluc.cryptoapp.data.workers
 
 import android.content.Context
-import androidx.work.*
-import com.vortexfluc.cryptoapp.data.database.AppDatabase
+import androidx.work.CoroutineWorker
+import androidx.work.OneTimeWorkRequest
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkerParameters
+import com.vortexfluc.cryptoapp.data.database.CoinInfoDao
 import com.vortexfluc.cryptoapp.data.mapper.CoinMapper
-import com.vortexfluc.cryptoapp.data.network.ApiFactory
+import com.vortexfluc.cryptoapp.data.network.ApiService
 import kotlinx.coroutines.delay
 
 class RefreshDataWorker(
     context: Context,
-    workerParameters: WorkerParameters
+    workerParameters: WorkerParameters,
+    private val coinInfoDao: CoinInfoDao,
+    private val mapper: CoinMapper,
+    private val apiService: ApiService
 ) : CoroutineWorker(context, workerParameters) {
     companion object {
         const val NAME = "RefreshDataWorker"
@@ -18,10 +24,6 @@ class RefreshDataWorker(
             return OneTimeWorkRequestBuilder<RefreshDataWorker>().build()
         }
     }
-
-    private val coinInfoDao = AppDatabase.getInstance(context).coinPriceInfoDao()
-    private val mapper = CoinMapper()
-    private val apiService = ApiFactory.apiService
 
     override suspend fun doWork(): Result {
         while (true) {
